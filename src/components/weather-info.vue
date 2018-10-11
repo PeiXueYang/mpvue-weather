@@ -111,6 +111,7 @@ export default {
   width: 80rpx;
   height: 80rpx;
   padding: 0 24rpx;
+  
 }
 .right {
   display: flex;
