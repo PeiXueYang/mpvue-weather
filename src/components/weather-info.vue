@@ -1,13 +1,14 @@
 <template>
     <div class="box">
       <div class="guide">
-          <div class="item">
-             <div class="date">今天</div>
-             <div class="temperature i">21 ~ 15℃</div>
-             <div class="weather i">🌤多云</div>
-             <div class="wind i">北风3-4级</div>
+          <div class="item" v-for="(item,index) in weatherInfo" :key='index'>
+             <div class="date">{{item.date==0?"周日": item.date == 1 ? "周一":item.date == 2?"周二":item.date == 3?"周三":
+               item.date == 4?"周四":item.date == 5?"周五":item.date == 6?"周六":""}}</div>
+             <div class="temperature i">{{item.temp}}</div>
+             <div class="weather i">🌤{{item.weather}}</div>
+             <div class="wind i">{{item.wind}}</div>
           </div>
-          <div class="item">
+          <!-- <div class="item">
              <div class="date">周五</div>
              <div class="temperature i">21 ~ 15℃</div>
              <div class="weather i">🌤小雨</div>
@@ -24,7 +25,7 @@
              <div class="temperature i">21 ~ 15℃</div>
              <div class="weather i">🌤多云</div>
              <div class="wind i">北风3-4级</div>
-          </div>
+          </div> -->
       </div>
       <div class="livingIndex">
           <div class="item-zhishu">
@@ -67,7 +68,10 @@
 </template>
 <script>
 export default {
-  props: ["text"]
+  props: ["weatherInfo"],
+  created(){
+   
+  }
 };
 </script>
 <style scoped>
@@ -121,5 +125,9 @@ export default {
 .value {
   margin-top: 10rpx;
   font-size: 24rpx;
+}
+.date{
+  font-size: 30rpx;
+  line-height: 30px;
 }
 </style>

@@ -5,7 +5,11 @@
       <div class="search">
         <div class="warpper">
           <img src="/static/img/search.png" alt="" class="search-img">
-          <input type="text" class="search-input" placeholder="查询其他城市" selection-start='-1' selection-end='-1' placeholder-style='color:#fff'>
+          <input type="text" class="search-input" placeholder="查询其他城市" 
+          selection-start='-1' selection-end='-1'
+           placeholder-style='color:#fff' maxlength='20' confirm-type='search'
+           @blur="search()"
+           v-model="searchInfo">
         </div>
       </div>
       <div class="content">
@@ -14,21 +18,21 @@
         </div>
         <div class="info">
           <div class="city">
-            <div class="name">上海市</div>
+            <div class="name">{{currentCity}}</div>
             <span class="time">{{date}} 更新</span>
           </div>
           <div class="message">
             {{message}}
           </div>
           <div class="temp">
-            20
+            {{curWeather.tmp_max}}
             <div class="fh">。</div>
           </div>
-          <div class="weather">多云</div>
+          <div class="weather">{{curWeather.cond_txt_d}}</div>
           <div class="pm"> 优 38</div>
         </div>
         <div class="guide">
-          <weather></weather>
+          <weather :weatherInfo='weather_data'></weather>
         </div>
       </div>
     </div>
@@ -41,12 +45,20 @@
        </div>
        <img src="/static/img/up-arrow.png" alt="" class="arrow-up" @click="hideSelImg">
     </div>
+    <!-- menu -->
+    <div class="menus">
+        <img class="menu " src="/static//img/location.png" style="transition: transform 200ms ease-out 0ms, opacity; transform: translate(0px, 0px) rotateZ(0deg); transform-origin: 50% 50% 0px; opacity: 0;"> 
+        <img class="menu" src="/static//img/setting.png" style="transition: transform 200ms ease-out 0ms, opacity; transform: translate(0px, 0px) rotateZ(0deg); transform-origin: 50% 50% 0px; opacity: 0;"> 
+        <img class="menu" src="/static//img/info.png" style="transition: transform 200ms ease-out 0ms, opacity; transform: translate(0px, 0px) rotateZ(0deg); transform-origin: 50% 50% 0px; opacity: 0;"> 
+        <img class="menu main" src="/static//img/menu.png" style="transition: transform 200ms ease-out 0ms; transform: rotateZ(0deg); transform-origin: 50% 50% 0px;"> 
+    </div>
   </div>
 </template>
 <script>
 import weather from "@/components/weather-info";
 import { messages } from "@/common/js/message";
 import { formatNumber, formatTime } from "@/utils/index";
+
 export default {
   data() {
     return {
@@ -87,14 +99,21 @@ export default {
           topColor: "#ffa5bc"
         }
       ],
-      showSelectImg: true
+      showSelectImg: true,
+      currentCity: "上海",
+      weather_data: [],
+      curWeather: {},
+      searchInfo: ""
     };
   },
   components: {
     weather
   },
-
   methods: {
+    search() {
+      this.currentCity = this.searchInfo;
+      this.getWeather();
+    },
     changebgUrl(src, color) {
       this.initbgImg = src;
       wx.setNavigationBarColor({
@@ -115,18 +134,56 @@ export default {
       wx.getLocation({
         type: "wgs84",
         success: res => {
-          console.log(res, "res");
+          // console.log(res, "res");
         },
         fail: err => {
           console.log(err, "err");
         }
       });
     },
-    setUpNavTitleStyle() {}
+    //获取天气数据
+    getWeather() {
+      let that = this;
+      that.weather_data = [];
+      wx.showLoading({
+        title: "加载中...",
+        mask: true
+      });
+      wx.request({
+        method: "get",
+        url:
+          "https://free-api.heweather.com/s6/weather/forecast?location=" +
+          `${that.currentCity}` +
+          "&key=5aeaeee5b8ad4a658b963c722ddfc645",
+        success: res => {
+          wx.hideLoading();
+          this.searchInfo = "";
+          console.log(res.data.HeWeather6, "res");
+          this.curWeather = res.data.HeWeather6[0]["daily_forecast"][0];
+          console.log(this.curWeather, "==");
+          let data = res.data.HeWeather6[0]["daily_forecast"];
+          for (let i in data) {
+            that.weather_data.push({
+              date: new Date(data[i]["date"]).getDay(),
+              temp: data[i]["tmp_min"] + "~" + data[i]["tmp_max"] + "℃",
+              weather: data[i]["cond_txt_d"],
+              wind: data[i]["wind_dir"] + data[i]["wind_sc"] + "级"
+            });
+          }
+        },
+        fail: err => {
+          wx.showToast({
+            title: "加载失败.",
+            duration: 1000
+          });
+        }
+      });
+    }
   },
   created() {
     // 调用应用实例的方法获取全局数据
     this.getLocation();
+    this.getWeather();
   },
   mounted() {
     //不同时刻的  提示信息
@@ -347,4 +404,17 @@ export default {
   display: block;
   margin: 10px auto;
 }
+.menus {
+
+}
+.menu {
+  height: 40px;
+  width: 40px;
+  position: fixed;
+  z-index: 100220;
+  bottom: 150rpx;
+  right: 70rpx;
+  opacity: 1;
+}
+
 </style>
