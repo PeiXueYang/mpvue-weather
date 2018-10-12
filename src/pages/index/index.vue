@@ -1,57 +1,147 @@
 <template>
   <div class="container">
-    <img src="/static/img/accomplishment-adventure-clear-sky-585825.jpg" alt="" class="bg-img">
-    <div class="search">
-      <div class="warpper">
-        <img src="/static/img/search.png" alt="" class="search-img">
-        <input type="text" class="search-input" placeholder="查询其他城市" selection-start='-1' selection-end='-1' placeholder-style='color:#fff'>
+    <img :src="initbgImg" alt="" class="bg-img"  >
+    <div v-if="showSelectImg">
+      <div class="search">
+        <div class="warpper">
+          <img src="/static/img/search.png" alt="" class="search-img">
+          <input type="text" class="search-input" placeholder="查询其他城市" selection-start='-1' selection-end='-1' placeholder-style='color:#fff'>
+        </div>
+      </div>
+      <div class="content">
+        <div class="avatarInfo">
+          <img src="/static/img/down-arrow.png" alt="" class="downArrow" @click="showSelImg">
+        </div>
+        <div class="info">
+          <div class="city">
+            <div class="name">上海市</div>
+            <span class="time">{{date}} 更新</span>
+          </div>
+          <div class="message">
+            {{message}}
+          </div>
+          <div class="temp">
+            20
+            <div class="fh">。</div>
+          </div>
+          <div class="weather">多云</div>
+          <div class="pm"> 优 38</div>
+        </div>
+        <div class="guide">
+          <weather></weather>
+        </div>
       </div>
     </div>
-    <div class="content">
-      <div class="avatarInfo">
-        <img src="/static/img/down-arrow.png" alt="" class="downArrow">
-      </div>
-      <div class="info">
-        <div class="city">
-          <div class="name">上海市</div>
-          <span class="time">2018-10-11 14：30 更新</span>
-        </div>
-        <div class="message">
-          天凉了，注意保暖~
-        </div>
-        <div class="temp">
-          20
-          <div class="fh">。</div>
-        </div>
-        <div class="weather">多云</div>
-        <div class="pm"> 优 38</div>
-      </div>
-      <div class="guide">
-        <weather></weather>
-      </div>
+    <div v-else class="changeBacground">
+       <div class="bg-txt">更换背景</div>
+       <div class="selc-img">
+          <div class="img-box" v-for="(item,index) in bcgImgList" :key='index' @click="changebgUrl(item.src,item.topColor)">
+              <img :src="item.src" alt="" class="sel-img">
+          </div>
+       </div>
+       <img src="/static/img/up-arrow.png" alt="" class="arrow-up" @click="hideSelImg">
     </div>
-    <h1>dsddd</h1>
   </div>
 </template>
-
 <script>
-import weather from '@/components/weather-info'
+import weather from "@/components/weather-info";
+import { messages } from "@/common/js/message";
+import { formatNumber, formatTime } from "@/utils/index";
 export default {
   data() {
-    return {};
+    return {
+      message: "",
+      date: "",
+      initbgImg: "/static/img/accomplishment-adventure-clear-sky-585825.jpg",
+      bcgImgList: [
+        {
+          src: "/static/img/beach-bird-birds-235787.jpg",
+          topColor: "#393836"
+        },
+        {
+          src: "/static/img/clouds-forest-idyllic-417102.jpg",
+          topColor: "#0085e5"
+        },
+        {
+          src: "/static/img/backlit-dawn-dusk-327466.jpg",
+          topColor: "#2d2225"
+        },
+        {
+          src: "/static/img/accomplishment-adventure-clear-sky-585825.jpg",
+          topColor: "#004a89"
+        },
+        {
+          src: "/static/img/fog-himalayas-landscape-38326.jpg",
+          topColor: "#b8bab9"
+        },
+        {
+          src: "/static/img/asphalt-blue-sky-clouds-490411.jpg",
+          topColor: "#009ffe"
+        },
+        {
+          src: "/static/img/aerial-climate-cold-296559.jpg",
+          topColor: "#d6d1e6"
+        },
+        {
+          src: "/static/img/beautiful-cold-dawn-547115.jpg",
+          topColor: "#ffa5bc"
+        }
+      ],
+      showSelectImg: true
+    };
   },
   components: {
     weather
   },
 
   methods: {
+    changebgUrl(src, color) {
+      this.initbgImg = src;
+      wx.setNavigationBarColor({
+        frontColor: "#ffffff",
+        backgroundColor: color
+      });
+    },
+    showSelImg() {
+      this.showSelectImg = false;
+    },
+    hideSelImg() {
+      this.showSelectImg = true;
+    },
     clickHandle(msg, ev) {
       console.log("clickHandle:", msg, ev);
-    }
+    },
+    getLocation() {
+      wx.getLocation({
+        type: "wgs84",
+        success: res => {
+          console.log(res, "res");
+        },
+        fail: err => {
+          console.log(err, "err");
+        }
+      });
+    },
+    setUpNavTitleStyle() {}
   },
-
   created() {
     // 调用应用实例的方法获取全局数据
+    this.getLocation();
+  },
+  mounted() {
+    //不同时刻的  提示信息
+    this.message = messages();
+    this.date = formatTime(new Date());
+  },
+
+  onLoad: function(options) {
+    wx.setNavigationBarTitle({
+      title: "轻天气"
+    });
+    wx.setNavigationBarColor({
+      frontColor: "#ffffff",
+      backgroundColor: "#004a89"
+    });
   }
 };
 </script>
@@ -63,6 +153,7 @@ export default {
   color: #fff;
   width: 100%;
   box-sizing: 100%;
+  font-size: 26rpx;
 }
 
 .bg-img {
@@ -224,5 +315,36 @@ export default {
   position: absolute;
   top: 10px;
   left: 65vw;
+}
+.changeBacground {
+  position: relative;
+  z-index: 20;
+  width: 100%;
+  top: -45px;
+}
+.bg-txt {
+  width: 90%;
+  margin: 0 auto;
+}
+.selc-img {
+  width: 90%;
+  margin: 5px auto;
+  height: 300px;
+  display: flex;
+  flex-wrap: wrap;
+}
+.sel-img {
+  width: 140rpx;
+  height: 230rpx;
+  display: inline-block;
+}
+.img-box {
+  margin: 6px;
+}
+.arrow-up {
+  width: 64rpx;
+  height: 64rpx;
+  display: block;
+  margin: 10px auto;
 }
 </style>

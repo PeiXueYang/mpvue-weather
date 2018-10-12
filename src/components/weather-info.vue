@@ -63,7 +63,6 @@
               </div>
           </div>
       </div>
-     
     </div>
 </template>
 <script>
@@ -91,8 +90,8 @@ export default {
 .i {
   padding-bottom: 20rpx;
 }
-.key{
-    font-size: 30rpx;
+.key {
+  font-size: 30rpx;
 }
 .livingIndex {
   background: rgba(0, 0, 0, 0.6);
@@ -111,7 +110,6 @@ export default {
   width: 80rpx;
   height: 80rpx;
   padding: 0 24rpx;
-  
 }
 .right {
   display: flex;
