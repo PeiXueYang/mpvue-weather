@@ -135,6 +135,7 @@ export default {
         type: "wgs84",
         success: res => {
           // console.log(res, "res");
+          
         },
         fail: err => {
           console.log(err, "err");
@@ -142,7 +143,7 @@ export default {
       });
     },
     //获取天气数据
-    getWeather() {
+    getWeather(lat,lnt) {
       let that = this;
       that.weather_data = [];
       wx.showLoading({
@@ -152,7 +153,7 @@ export default {
       wx.request({
         method: "get",
         url:
-          "https://free-api.heweather.com/s6/weather/forecast?location=" +
+          "https://free-api.heweather.com/s6/weather?location=" +
           `${that.currentCity}` +
           "&key=5aeaeee5b8ad4a658b963c722ddfc645",
         success: res => {
