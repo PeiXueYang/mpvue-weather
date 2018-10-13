@@ -14,6 +14,8 @@
       </div>
       <div class="content">
         <div class="avatarInfo">
+          <open-data type='userAvatarUrl' class="avatars"></open-data>
+          <open-data type='userNickName' class="name-avatar"></open-data>
           <img src="/static/img/down-arrow.png" alt="" class="downArrow" @click="showSelImg">
         </div>
         <div class="info">
@@ -300,7 +302,6 @@ export default {
   height: 30rpx;
   display: inline-block;
   overflow: hidden;
-  margin-left: 50px;
 }
 
 .info {
@@ -425,5 +426,17 @@ export default {
   bottom: 150rpx;
   right: 70rpx;
   opacity: 1;
+}
+.avatars{
+  display:block;
+  overflow:hidden;
+  width:60rpx;
+  height:60rpx;
+  border-radius:50%;
+}
+.name-avatar{
+  padding:0 20rpx;
+  font-size:30rpx;
+
 }
 </style>
