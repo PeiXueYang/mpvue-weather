@@ -8,59 +8,55 @@
              <div class="weather i">🌤{{item.weather}}</div>
              <div class="wind i">{{item.wind}}</div>
           </div>
-          <!-- <div class="item">
-             <div class="date">周五</div>
-             <div class="temperature i">21 ~ 15℃</div>
-             <div class="weather i">🌤小雨</div>
-             <div class="wind i">北风3-4级</div>
-          </div>
-          <div class="item">
-             <div class="date">周六</div>
-             <div class="temperature i">21 ~ 15℃</div>
-             <div class="weather i">⛅晴</div>
-             <div class="wind i">北风3-4级</div>
-           </div>
-           <div class="item">
-             <div class="date">周日</div>
-             <div class="temperature i">21 ~ 15℃</div>
-             <div class="weather i">🌤多云</div>
-             <div class="wind i">北风3-4级</div>
-          </div> -->
       </div>
       <div class="livingIndex">
           <div class="item-zhishu">
+              <img src="/static/img/lifestyle_comf.png" alt="" class="icon">
+              <div class="right">
+                  <div class="key">舒适度指数 {{comcrf}}</div>
+                  <div class="value">{{comTxt}}</div>
+              </div>
+          </div>
+          <div class="item-zhishu">
               <img src="/static/img/clothing.png" alt="" class="icon">
               <div class="right">
-                  <div class="key">穿衣指数 较舒适</div>
-                  <div class="value">建议着薄外套、开衫牛仔衫裤等服装。年老体弱者应适当添加衣物，宜着夹克衫、薄毛衣等。</div>
+                  <div class="key">穿衣指数 {{clothInfocrf}}</div>
+                  <div class="value">{{clothInfoTxt}}</div>
               </div>
           </div>
            <div class="item-zhishu">
               <img src="/static/img/carwashing.png" alt="" class="icon">
               <div class="right">
-                  <div class="key">洗车指数 较适宜</div>
-                  <div class="value">较适宜洗车，未来一天无雨，风力较小，擦洗一新的汽车至少能保持一天。</div>
+                  <div class="key">洗车指数 {{carcrf}}</div>
+                  <div class="value">{{carTxt}}</div>
               </div>
           </div>
            <div class="item-zhishu">
               <img src="/static/img/pill.png" alt="" class="icon">
               <div class="right">
-                  <div class="key">感冒指数 较易发</div>
-                  <div class="value">天气较凉，较易发生感冒，请适当增加衣服。体质较弱的朋友尤其应该注意防护。</div>
+                  <div class="key">感冒指数 {{coldcrf}}</div>
+                  <div class="value">{{coldTxt}}</div>
               </div>
           </div>
            <div class="item-zhishu">
               <img src="/static/img/running.png" alt="" class="icon">
               <div class="right">
-                  <div class="key">运动指数 较适宜</div>
-                  <div class="value">天气较好，但因风力稍强，户外可选择对风力要求不高的运动，推荐您进行室内运动。</div>
+                  <div class="key">运动指数 {{sportcrf}}</div>
+                  <div class="value">{{sportTxt}}</div>
+              </div>
+          </div>
+             <div class="item-zhishu">
+              <img src="/static/img/lifestyle_trav.png" alt="" class="icon">
+              <div class="right">
+                  <div class="key">旅游指数 {{aircrf}}</div>
+                  <div class="value">{{airTxt}}</div>
               </div>
           </div>
            <div class="item-zhishu">
               <img src="/static/img/sun.png" alt="" class="icon">
               <div class="right">
-                  <div class="key">紫外线强度指数 弱</div>
-                  <div class="value">紫外线强度较弱，建议出门前涂擦SPF在12-15之间、PA+的防晒护肤品。</div>
+                  <div class="key">紫外线强度指数 {{linecrf}}</div>
+                  <div class="value">{{lineTxt}}</div>
               </div>
           </div>
       </div>
@@ -68,9 +64,50 @@
 </template>
 <script>
 export default {
-  props: ["weatherInfo"],
+  props: ["weatherInfo","lifeStyle"],
+  data(){
+     return {
+        info:'',
+        comTxt:'',
+        comcrf:"",
+        clothInfoTxt:'',
+        clothInfocrf:'',
+        carTxt:'',
+        carcrf:'',
+        coldTxt:"",
+        coldcrf:'',
+        sportTxt:'',
+        sportcrf:"",
+        lineTxt:'',
+        linecrf:'',
+        travTxt:'',
+        travcrf:"",
+        airTxt:"",
+        aircrf:'',
+     }
+  },
   created(){
-   
+    
+    setTimeout(()=>{
+       console.log(this.lifeStyle,'lifestyle')
+        this.info = this.lifeStyle
+        this.comTxt = this.info[0]['txt']
+        this.comcrf = this.info[0]['brf']
+        this.clothInfoTxt = this.info[1]['txt']
+        this.clothInfocrf = this.info[1]['brf']
+        this.carTxt = this.info[6]['txt']
+        this.carcrf = this.info[6]['brf']
+        this.coldTxt = this.info[2]['txt']
+        this.coldcrf = this.info[2]['brf']
+        this.sportTxt = this.info[3]['txt']
+        this.sportcrf =this.info[3]['brf']
+        this.lineTxt = this.info[7]['txt']
+        this.linecrf =this.info[7]['brf']
+        this.travTxt = this.info[4]['txt']
+        this.travcrf =this.info[4]['brf']
+        this.airTxt = this.info[5]['txt']
+        this.aircrf =this.info[5]['brf']
+    },1000)
   }
 };
 </script>

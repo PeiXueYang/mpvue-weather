@@ -25,14 +25,17 @@
             {{message}}
           </div>
           <div class="temp">
-            {{curWeather.tmp_max}}
+            {{nowTem}}
             <div class="fh">。</div>
           </div>
           <div class="weather">{{curWeather.cond_txt_d}}</div>
           <div class="pm"> 优 38</div>
         </div>
+        <div class='fouces'>
+            <infoItem :nowLife='QXstyle'></infoItem>
+        </div>
         <div class="guide">
-          <weather :weatherInfo='weather_data'></weather>
+          <weather :weatherInfo='weather_data' :lifeStyle='lifeStyle'></weather>
         </div>
       </div>
     </div>
@@ -56,6 +59,7 @@
 </template>
 <script>
 import weather from "@/components/weather-info";
+import infoItem from "@/components/info-item"
 import { messages } from "@/common/js/message";
 import { formatNumber, formatTime } from "@/utils/index";
 
@@ -100,19 +104,21 @@ export default {
         }
       ],
       showSelectImg: true,
-      currentCity: "上海",
+      currentCity: "",
       weather_data: [],
       curWeather: {},
-      searchInfo: ""
+      searchInfo: "",
+      lifeStyle:'',//生活指数
+      QXstyle:'',//气象指数
+      nowTem:'',//当前气温
     };
   },
   components: {
-    weather
+    weather,infoItem
   },
   methods: {
     search() {
-      this.currentCity = this.searchInfo;
-      this.getWeather();
+      this.getWeather(this.searchInfo);
     },
     changebgUrl(src, color) {
       this.initbgImg = src;
@@ -131,10 +137,12 @@ export default {
       console.log("clickHandle:", msg, ev);
     },
     getLocation() {
+      let that  = this 
       wx.getLocation({
         type: "wgs84",
         success: res => {
           // console.log(res, "res");
+          that.getWeather(`${res.latitude},${res.longitude}`)
           
         },
         fail: err => {
@@ -143,7 +151,7 @@ export default {
       });
     },
     //获取天气数据
-    getWeather(lat,lnt) {
+    getWeather(location) {
       let that = this;
       that.weather_data = [];
       wx.showLoading({
@@ -152,17 +160,21 @@ export default {
       });
       wx.request({
         method: "get",
-        url:
-          "https://free-api.heweather.com/s6/weather?location=" +
-          `${that.currentCity}` +
-          "&key=5aeaeee5b8ad4a658b963c722ddfc645",
+        url:'https://free-api.heweather.com/s6/weather',
+        data:{
+          location,
+          key:'5aeaeee5b8ad4a658b963c722ddfc645'
+        },
         success: res => {
           wx.hideLoading();
           this.searchInfo = "";
-          console.log(res.data.HeWeather6, "res");
+          console.log(res, "res");
           this.curWeather = res.data.HeWeather6[0]["daily_forecast"][0];
-          console.log(this.curWeather, "==");
           let data = res.data.HeWeather6[0]["daily_forecast"];
+          that.currentCity = res.data.HeWeather6[0]['basic']['location']
+          that.lifeStyle = res.data.HeWeather6[0]['lifestyle']
+          that.QXstyle = res.data.HeWeather6[0]['now']
+          that.nowTem = res.data.HeWeather6[0]['now'].tmp
           for (let i in data) {
             that.weather_data.push({
               date: new Date(data[i]["date"]).getDay(),
@@ -184,7 +196,7 @@ export default {
   created() {
     // 调用应用实例的方法获取全局数据
     this.getLocation();
-    this.getWeather();
+    // this.getWeather();
   },
   mounted() {
     //不同时刻的  提示信息
@@ -405,9 +417,6 @@ export default {
   display: block;
   margin: 10px auto;
 }
-.menus {
-
-}
 .menu {
   height: 40px;
   width: 40px;
@@ -417,5 +426,4 @@ export default {
   right: 70rpx;
   opacity: 1;
 }
-
 </style>
