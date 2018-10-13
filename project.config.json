@@ -9,8 +9,8 @@
 	},
 	"miniprogramRoot": "dist/",
 	"compileType": "miniprogram",
-	"appid": "wxecd7dc6ef6116134",
-	"projectname": "mpvue-weather",
+	"appid": "wxcfd4046668f3ecb0",
+	"projectname": "%E8%BD%BB%E5%A4%A9%E6%B0%94",
 	"condition": {
 		"search": {
 			"current": -1,

@@ -16,7 +16,7 @@ export  const  messages = () => {
       case 12:
         return '午饭时间到了，该吃些什么好呢?兄dei'
       case 13:
-        return '中午好，如果工作太忙，那就不要吃饭了'
+        return '中午好，工作再忙，也不要忘记吃午饭.'
       case 14:
         return '午睡好了吧，可以工作了.'
       case 15:

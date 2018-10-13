@@ -120,7 +120,18 @@ export default {
   },
   methods: {
     search() {
-      this.getWeather(this.searchInfo);
+      if(!this.searchInfo){
+        //  wx.showToast({
+        //         title: "请输入城市",
+        //         image:'/static/img/error.png',
+        //         duration: 1000
+        //  });
+        //  return false
+      }
+      else{
+        this.getWeather(this.searchInfo);
+      }
+      
     },
     changebgUrl(src, color) {
       this.initbgImg = src;
@@ -169,24 +180,40 @@ export default {
         },
         success: res => {
           wx.hideLoading();
-          this.searchInfo = "";
-          console.log(res, "res");
-          this.curWeather = res.data.HeWeather6[0]["daily_forecast"][0];
-          let data = res.data.HeWeather6[0]["daily_forecast"];
-          that.currentCity = res.data.HeWeather6[0]['basic']['location']
-          that.lifeStyle = res.data.HeWeather6[0]['lifestyle']
-          that.QXstyle = res.data.HeWeather6[0]['now']
-          that.nowTem = res.data.HeWeather6[0]['now'].tmp
-          for (let i in data) {
-            that.weather_data.push({
-              date: new Date(data[i]["date"]).getDay(),
-              temp: data[i]["tmp_min"] + "~" + data[i]["tmp_max"] + "℃",
-              weather: data[i]["cond_txt_d"],
-              wind: data[i]["wind_dir"] + data[i]["wind_sc"] + "级"
-            });
+          if(res.data.HeWeather6[0]['status']=='ok'){
+              wx.showToast({
+                title: "加载成功.",
+                duration: 1000
+              });
+              that.searchInfo = "";
+              console.log(res, "res");
+              that.curWeather = res.data.HeWeather6[0]["daily_forecast"][0];
+              let data = res.data.HeWeather6[0]["daily_forecast"];
+              that.currentCity = res.data.HeWeather6[0]['basic']['location']
+              that.lifeStyle = res.data.HeWeather6[0]['lifestyle']
+              that.QXstyle = res.data.HeWeather6[0]['now']
+              that.nowTem = res.data.HeWeather6[0]['now'].tmp
+              for (let i in data) {
+                that.weather_data.push({
+                  date: new Date(data[i]["date"]).getDay(),
+                  temp: data[i]["tmp_min"] + "~" + data[i]["tmp_max"] + "℃",
+                  weather: data[i]["cond_txt_d"],
+                  wind: data[i]["wind_dir"] + data[i]["wind_sc"] + "级"
+                });
+              }               
+          }else{
+            that.searchInfo = "";
+            wx.showToast({
+                title: "查询失败.",
+                image:'/static/img/error.png',
+                duration: 1000
+              });
           }
+
+         
         },
         fail: err => {
+          console.log(err,'erre')
           wx.showToast({
             title: "加载失败.",
             duration: 1000
