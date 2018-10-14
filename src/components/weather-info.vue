@@ -86,8 +86,13 @@ export default {
         aircrf:'',
      }
   },
+  mounted(){
+      this.$nextTick(()=>{
+
+      })
+      
+  },
   created(){
-    
     setTimeout(()=>{
        console.log(this.lifeStyle,'lifestyle')
         this.info = this.lifeStyle

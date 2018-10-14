@@ -52,10 +52,10 @@
     </div>
     <!-- menu -->
     <div class="menus">
-        <img class="menu " src="/static//img/location.png" style="transition: transform 200ms ease-out 0ms, opacity; transform: translate(0px, 0px) rotateZ(0deg); transform-origin: 50% 50% 0px; opacity: 0;"> 
-        <img class="menu" src="/static//img/setting.png" style="transition: transform 200ms ease-out 0ms, opacity; transform: translate(0px, 0px) rotateZ(0deg); transform-origin: 50% 50% 0px; opacity: 0;"> 
-        <img class="menu" src="/static//img/info.png" style="transition: transform 200ms ease-out 0ms, opacity; transform: translate(0px, 0px) rotateZ(0deg); transform-origin: 50% 50% 0px; opacity: 0;"> 
-        <img class="menu main" src="/static//img/menu.png" style="transition: transform 200ms ease-out 0ms; transform: rotateZ(0deg); transform-origin: 50% 50% 0px;"> 
+        <img class="menu " src="/static//img/location.png"  @click="animate"> 
+        <img class="menu" src="/static//img/setting.png"  @click="animate"> 
+        <img class="menu" src="/static//img/info.png"  @click="animate"> 
+        <img class="menu main" src="/static//img/menu.png"   @click="animate"> 
     </div>
   </div>
 </template>
@@ -68,6 +68,7 @@ import { formatNumber, formatTime } from "@/utils/index";
 export default {
   data() {
     return {
+      animationOne:'',
       message: "",
       date: "",
       initbgImg: "/static/img/accomplishment-adventure-clear-sky-585825.jpg",
@@ -119,6 +120,16 @@ export default {
     weather,infoItem
   },
   methods: {
+    animate(){
+      //  this.animationOne = ''
+      console.log(22)
+       let animationOne = wx.createAnimation({
+               duration: 200,
+               timingFunction: 'ease-out'
+          })
+       animationOne.translate(-50, -60).rotateZ(360).opacity(1).step()
+       this.animationOne =  animationOne.export()
+    },
     search() {
       if(!this.searchInfo){
         //  wx.showToast({
