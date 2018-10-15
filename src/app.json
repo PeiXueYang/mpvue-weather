@@ -1,7 +1,7 @@
 {
   "pages": [
     "pages/index/main",
-    "pages/logs/main",
+    "pages/about/main",
     "pages/counter/main"
   ],
   "window": {

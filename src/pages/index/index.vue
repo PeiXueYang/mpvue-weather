@@ -54,10 +54,10 @@
     </div>
     <!-- menu -->
     <div class="menus">
-        <img class="menu " src="/static//img/location.png"  @click="animate"> 
-        <img class="menu" src="/static//img/setting.png"  @click="animate"> 
-        <img class="menu" src="/static//img/info.png"  @click="animate"> 
-        <img class="menu main" src="/static//img/menu.png"   @click="animate"> 
+        <img class="menu-loc " src="/static/img/location.png"   v-if="sinfo" v-bind:class='{"mInfo":menuInfo==1}'> 
+        <img class="menu-info" src="/static/img/info.png" v-if="sinfo" v-bind:class='{"menuInfo":menuInfo==1}' @click="toAbout"> 
+        <img class="menu-setting" src="/static/img/setting.png" v-if="sinfo" v-bind:class='{"sInfo":menuInfo==1}'> 
+        <img class="menu" src="/static/img/menu.png" @click="animate" > 
     </div>
   </div>
 </template>
@@ -70,6 +70,8 @@ import { formatNumber, formatTime } from "@/utils/index";
 export default {
   data() {
     return {
+      menuInfo:0,
+      sinfo:false,
       animationOne:'',
       message: "",
       date: "",
@@ -122,7 +124,15 @@ export default {
     weather,infoItem
   },
   methods: {
+    toAbout(){
+        var url = "../about/main"
+         wx.navigateTo({url})
+    },
     animate(){
+      this.sinfo = !this.sinfo;
+      if(this.sinfo){
+        this.menuInfo =1
+      }
     },
     search() {
       if(!this.searchInfo){
@@ -181,7 +191,7 @@ export default {
           wx.hideLoading();
           if(res.data.HeWeather6[0]['status']=='ok'){
               wx.showToast({
-                title: "加载成功.",
+                title: "查询成功.",
                 duration: 1000
               });
               that.searchInfo = "";
@@ -208,8 +218,6 @@ export default {
                 duration: 1000
               });
           }
-
-         
         },
         fail: err => {
           console.log(err,'erre')
@@ -243,7 +251,6 @@ export default {
   }
 };
 </script>
-
 <style scoped>
 .container {
   min-height: 100vh;
@@ -463,6 +470,51 @@ export default {
 .name-avatar{
   padding:0 20rpx;
   font-size:30rpx;
-
 }
+.menu:active{
+   transition: transform 200ms ease-out 0ms; 
+   transform: rotateZ(180deg);
+   transform-origin: 50% 50% 0px;
+}
+.menu-setting{
+  height: 40px;
+  width: 40px;
+  position: fixed;
+  z-index: 100220;
+  bottom: 150rpx;
+  right: 70rpx;
+  opacity: 1;
+}
+.menu-info{
+  height: 40px;
+  width: 40px;
+  position: fixed;
+  z-index: 100220;
+  bottom: 150rpx;
+  right: 70rpx;
+  opacity: 1;
+}
+.menu-loc{
+  height: 40px;
+  width: 40px;
+  position: fixed;
+  z-index: 100220;
+  right: 70rpx;
+  opacity: 1;
+}
+.menuInfo{
+   transform:scale(0.8,0.8);
+   bottom: 130px;
+   right: 90px;
+}
+.sInfo{
+   right: 270rpx;
+  transform:scale(0.8,0.8);
+}
+.mInfo{
+  bottom: 50rpx;
+  right: 90px;
+  transform:scale(0.8,0.8);
+}
+
 </style>

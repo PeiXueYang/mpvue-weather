@@ -16,7 +16,7 @@
                   <div class="key">舒适度指数 {{comcrf}}</div>
                   <div class="value">{{comTxt}}</div>
               </div>
-          </div>
+          </div>   
           <div class="item-zhishu">
               <img src="/static/img/clothing.png" alt="" class="icon">
               <div class="right">
