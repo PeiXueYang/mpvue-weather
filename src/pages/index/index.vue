@@ -34,10 +34,12 @@
           <div class="pm"> 优 38</div>
         </div>
         <div class='fouces'>
+          <keep-alive>
             <infoItem :nowLife='QXstyle'></infoItem>
+          </keep-alive>
         </div>
         <div class="guide">
-          <weather :weatherInfo='weather_data' :lifeStyle='lifeStyle'></weather>
+         <keep-alive> <weather :weatherInfo='weather_data' :lifeStyle='lifeStyle'></weather></keep-alive>
         </div>
       </div>
     </div>
@@ -121,23 +123,9 @@ export default {
   },
   methods: {
     animate(){
-      //  this.animationOne = ''
-      console.log(22)
-       let animationOne = wx.createAnimation({
-               duration: 200,
-               timingFunction: 'ease-out'
-          })
-       animationOne.translate(-50, -60).rotateZ(360).opacity(1).step()
-       this.animationOne =  animationOne.export()
     },
     search() {
       if(!this.searchInfo){
-        //  wx.showToast({
-        //         title: "请输入城市",
-        //         image:'/static/img/error.png',
-        //         duration: 1000
-        //  });
-        //  return false
       }
       else{
         this.getWeather(this.searchInfo);

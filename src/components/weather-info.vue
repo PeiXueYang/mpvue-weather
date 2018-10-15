@@ -90,12 +90,11 @@ export default {
       this.$nextTick(()=>{
 
       })
-      
+    
   },
-  created(){
-    setTimeout(()=>{
-       console.log(this.lifeStyle,'lifestyle')
-        this.info = this.lifeStyle
+  watch:{
+      lifeStyle(value){
+        this.info = value
         this.comTxt = this.info[0]['txt']
         this.comcrf = this.info[0]['brf']
         this.clothInfoTxt = this.info[1]['txt']
@@ -112,7 +111,10 @@ export default {
         this.travcrf =this.info[4]['brf']
         this.airTxt = this.info[5]['txt']
         this.aircrf =this.info[5]['brf']
-    },1000)
+      }
+
+  },
+  created(){
   }
 };
 </script>
