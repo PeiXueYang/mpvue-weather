@@ -54,7 +54,7 @@
     </div>
     <!-- menu -->
     <div class="menus">
-        <img class="menu-loc " src="/static/img/location.png"   v-if="sinfo" v-bind:class='{"mInfo":menuInfo==1}'> 
+        <img class="menu-loc " src="/static/img/location.png" @click="toCity"   v-if="sinfo" v-bind:class='{"mInfo":menuInfo==1}'> 
         <img class="menu-info" src="/static/img/info.png" v-if="sinfo" v-bind:class='{"menuInfo":menuInfo==1}' @click="toAbout"> 
         <img class="menu-setting" src="/static/img/setting.png" v-if="sinfo" v-bind:class='{"sInfo":menuInfo==1}'> 
         <img class="menu" src="/static/img/menu.png" @click="animate" > 
@@ -63,16 +63,16 @@
 </template>
 <script>
 import weather from "@/components/weather-info";
-import infoItem from "@/components/info-item"
+import infoItem from "@/components/info-item";
 import { messages } from "@/common/js/message";
 import { formatNumber, formatTime } from "@/utils/index";
-
+import { obj } from "@/common/js/cityData";
 export default {
   data() {
     return {
-      menuInfo:0,
-      sinfo:false,
-      animationOne:'',
+      menuInfo: 0,
+      sinfo: false,
+      animationOne: "",
       message: "",
       date: "",
       initbgImg: "/static/img/accomplishment-adventure-clear-sky-585825.jpg",
@@ -111,36 +111,43 @@ export default {
         }
       ],
       showSelectImg: true,
-      currentCity: "",
+      currentCity: '',
       weather_data: [],
       curWeather: {},
       searchInfo: "",
-      lifeStyle:'',//生活指数
-      QXstyle:'',//气象指数
-      nowTem:'',//当前气温
+      lifeStyle: "", //生活指数
+      QXstyle: "", //气象指数
+      nowTem: "", //当前气温
+      setTitle: "查询成功.", //设置title
+      cityChange:false,
     };
   },
   components: {
-    weather,infoItem
+    weather,
+    infoItem
   },
   methods: {
-    toAbout(){
-        var url = "../about/main"
-         wx.navigateTo({url})
+    toCity() {
+      var url = "../pickCity/main";
+      wx.navigateTo({ url });
+      this.sinfo = false;
     },
-    animate(){
+    toAbout() {
+      var url = "../about/main";
+      wx.navigateTo({ url });
+      this.sinfo = false;
+    },
+    animate() {
       this.sinfo = !this.sinfo;
-      if(this.sinfo){
-        this.menuInfo =1
+      if (this.sinfo) {
+        this.menuInfo = 1;
       }
     },
     search() {
-      if(!this.searchInfo){
-      }
-      else{
+      if (!this.searchInfo) {
+      } else {
         this.getWeather(this.searchInfo);
       }
-      
     },
     changebgUrl(src, color) {
       this.initbgImg = src;
@@ -153,19 +160,20 @@ export default {
       this.showSelectImg = false;
     },
     hideSelImg() {
+      this.setTitle = "切换成功.";
       this.showSelectImg = true;
+      this.getLocation();
     },
     clickHandle(msg, ev) {
       console.log("clickHandle:", msg, ev);
     },
     getLocation() {
-      let that  = this 
+      let that = this;
       wx.getLocation({
         type: "wgs84",
         success: res => {
           // console.log(res, "res");
-          that.getWeather(`${res.latitude},${res.longitude}`)
-          
+          that.getWeather(`${res.latitude},${res.longitude}`);
         },
         fail: err => {
           console.log(err, "err");
@@ -182,45 +190,45 @@ export default {
       });
       wx.request({
         method: "get",
-        url:'https://free-api.heweather.com/s6/weather',
-        data:{
+        url: "https://free-api.heweather.com/s6/weather",
+        data: {
           location,
-          key:'5aeaeee5b8ad4a658b963c722ddfc645'
+          key: "5aeaeee5b8ad4a658b963c722ddfc645"
         },
         success: res => {
           wx.hideLoading();
-          if(res.data.HeWeather6[0]['status']=='ok'){
-              wx.showToast({
-                title: "查询成功.",
-                duration: 1000
+          if (res.data.HeWeather6[0]["status"] == "ok") {
+            wx.showToast({
+              title: that.setTitle,
+              duration: 1000
+            });
+            that.searchInfo = "";
+            console.log(res, "res");
+            that.curWeather = res.data.HeWeather6[0]["daily_forecast"][0];
+            let data = res.data.HeWeather6[0]["daily_forecast"];
+            that.currentCity = res.data.HeWeather6[0]["basic"]["location"];
+            that.lifeStyle = res.data.HeWeather6[0]["lifestyle"];
+            that.QXstyle = res.data.HeWeather6[0]["now"];
+            that.nowTem = res.data.HeWeather6[0]["now"].tmp;
+            for (let i in data) {
+              that.weather_data.push({
+                date: new Date(data[i]["date"]).getDay(),
+                temp: data[i]["tmp_min"] + "~" + data[i]["tmp_max"] + "℃",
+                weather: data[i]["cond_txt_d"],
+                wind: data[i]["wind_dir"] + data[i]["wind_sc"] + "级"
               });
-              that.searchInfo = "";
-              console.log(res, "res");
-              that.curWeather = res.data.HeWeather6[0]["daily_forecast"][0];
-              let data = res.data.HeWeather6[0]["daily_forecast"];
-              that.currentCity = res.data.HeWeather6[0]['basic']['location']
-              that.lifeStyle = res.data.HeWeather6[0]['lifestyle']
-              that.QXstyle = res.data.HeWeather6[0]['now']
-              that.nowTem = res.data.HeWeather6[0]['now'].tmp
-              for (let i in data) {
-                that.weather_data.push({
-                  date: new Date(data[i]["date"]).getDay(),
-                  temp: data[i]["tmp_min"] + "~" + data[i]["tmp_max"] + "℃",
-                  weather: data[i]["cond_txt_d"],
-                  wind: data[i]["wind_dir"] + data[i]["wind_sc"] + "级"
-                });
-              }               
-          }else{
+            }
+          } else {
             that.searchInfo = "";
             wx.showToast({
-                title: "查询失败.",
-                image:'/static/img/error.png',
-                duration: 1000
-              });
+              title: "查询失败.",
+              image: "/static/img/error.png",
+              duration: 1000
+            });
           }
         },
         fail: err => {
-          console.log(err,'erre')
+          console.log(err, "erre");
           wx.showToast({
             title: "加载失败.",
             duration: 1000
@@ -248,7 +256,18 @@ export default {
       frontColor: "#ffffff",
       backgroundColor: "#004a89"
     });
-  }
+  },
+  //当 接受到picker 过来的城市数据
+  // init pick天气 数据
+  onShow(){
+    if(!this.cityChange){
+        this.getWeather( wx.getStorageSync('cityName'))
+    }
+     
+  },
+  onHide (){
+   console.log('hiede hide')
+  },
 };
 </script>
 <style scoped>
@@ -460,23 +479,23 @@ export default {
   right: 70rpx;
   opacity: 1;
 }
-.avatars{
-  display:block;
-  overflow:hidden;
-  width:60rpx;
-  height:60rpx;
-  border-radius:50%;
+.avatars {
+  display: block;
+  overflow: hidden;
+  width: 60rpx;
+  height: 60rpx;
+  border-radius: 50%;
 }
-.name-avatar{
-  padding:0 20rpx;
-  font-size:30rpx;
+.name-avatar {
+  padding: 0 20rpx;
+  font-size: 30rpx;
 }
-.menu:active{
-   transition: transform 200ms ease-out 0ms; 
-   transform: rotateZ(180deg);
-   transform-origin: 50% 50% 0px;
+.menu:active {
+  transition: transform 200ms ease-out 0ms;
+  transform: rotateZ(180deg);
+  transform-origin: 50% 50% 0px;
 }
-.menu-setting{
+.menu-setting {
   height: 40px;
   width: 40px;
   position: fixed;
@@ -485,7 +504,7 @@ export default {
   right: 70rpx;
   opacity: 1;
 }
-.menu-info{
+.menu-info {
   height: 40px;
   width: 40px;
   position: fixed;
@@ -494,7 +513,7 @@ export default {
   right: 70rpx;
   opacity: 1;
 }
-.menu-loc{
+.menu-loc {
   height: 40px;
   width: 40px;
   position: fixed;
@@ -502,19 +521,18 @@ export default {
   right: 70rpx;
   opacity: 1;
 }
-.menuInfo{
-   transform:scale(0.8,0.8);
-   bottom: 130px;
-   right: 90px;
+.menuInfo {
+  transform: scale(0.8, 0.8);
+  bottom: 130px;
+  right: 90px;
 }
-.sInfo{
-   right: 270rpx;
-  transform:scale(0.8,0.8);
+.sInfo {
+  right: 270rpx;
+  transform: scale(0.8, 0.8);
 }
-.mInfo{
+.mInfo {
   bottom: 50rpx;
   right: 90px;
-  transform:scale(0.8,0.8);
+  transform: scale(0.8, 0.8);
 }
-
 </style>

@@ -20,7 +20,7 @@ export  const  messages = () => {
       case 14:
         return '午睡好了吧，可以工作了.'
       case 15:
-        return '偷偷告诉了，累了记得休息会哦'
+        return '偷偷告诉你，累了记得休息会哦'
       case 16:
         return '下午过半了,再坚持会就可以见到TA了.'
       case 17:

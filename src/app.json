@@ -2,7 +2,7 @@
   "pages": [
     "pages/index/main",
     "pages/about/main",
-    "pages/counter/main"
+    "pages/pickCity/main"
   ],
   "window": {
     "backgroundTextStyle": "dark",
