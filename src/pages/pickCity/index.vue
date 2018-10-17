@@ -6,7 +6,7 @@
           <img src="/static/img/search_grey.png" alt="" class="icon">
           <input type="text" placeholder="搜索城市" class="input" @blur="searchCity()" v-model="scity">
         </div>
-        <span class="cancle">清空</span>
+        <span class="cancle" @click="clear">清空</span>
       </div>
     </div>
     <div class="bottom" v-if="showCityList">
@@ -41,15 +41,23 @@ export default {
       return store.state.count;
     }
   },
+  watch:{
+      scity:function(){
+         if(!this.scity){
+            this.showCityList = true
+         }
+      }
+  },
   mounted() {
     let cities = this.getSortedAreaObj(obj.cities || []);
     this.cityData = cities;
-    // console.log(this.cityData,33333333)
   },
   created() {},
   methods: {
-    //匹配 搜索 内容
-    filter() {},
+    clear(){
+       this.scity = '',
+       this.showCityList = true
+    },
     searchCity() {
      let alternative = {}
      let cities =   this.cityData 
