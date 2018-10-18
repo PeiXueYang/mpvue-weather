@@ -49,14 +49,15 @@ export default {
       }
   },
   mounted() {
-    let cities = this.getSortedAreaObj(obj.cities || []);
-    this.cityData = cities;
+   
   },
-  created() {},
+  created() {
+     let cities = this.getSortedAreaObj(obj.cities || []);
+     this.cityData = cities;
+  },
   methods: {
     clear(){
-       this.scity = '',
-       this.showCityList = true
+       this.scity = ''
     },
     searchCity() {
      let alternative = {}
@@ -73,16 +74,13 @@ export default {
                   alternative[i] = []
                 }
                 this.cityData[i] = []
-                // console.log(this.cityData,888)
                 alternative[i].push(item)
                 this.cityData[i].push(item)
-                // console.log(this.cityData,33)
-            }
-            else{
-              this.showCityList = false
             }
           }
         }
+      }else{
+        // this.showCityList = false
       }
     },
     //选择城市
@@ -112,6 +110,8 @@ export default {
     // 按照字母顺序生成需要的数据格式
     getSortedAreaObj(areas) {
       // let areas = staticData.areas
+      // console.log(areas,'diqu 上面的')
+      // return
       areas = areas.sort((a, b) => {
         if (a.letter > b.letter) {
           return 1;
