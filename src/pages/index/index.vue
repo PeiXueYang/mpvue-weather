@@ -54,9 +54,9 @@
     </div>
     <!-- menu -->
     <div class="menus">
-        <img class="menu-loc " src="/static/img/location.png" @click="toCity"   v-if="sinfo" v-bind:class='{"mInfo":menuInfo==1}'> 
-        <img class="menu-info" src="/static/img/info.png" v-if="sinfo" v-bind:class='{"menuInfo":menuInfo==1}' @click="toAbout"> 
-        <img class="menu-setting" src="/static/img/setting.png" v-if="sinfo" v-bind:class='{"sInfo":menuInfo==1}'> 
+        <img class="menu-loc " src="/static/img/location.png" @click="linkToPage(1)"   v-if="sinfo" v-bind:class='{"mInfo":menuInfo==1}'> 
+        <img class="menu-info" src="/static/img/info.png" v-if="sinfo" v-bind:class='{"menuInfo":menuInfo==1}' @click="linkToPage(1)"> 
+        <img class="menu-setting" src="/static/img/setting.png" v-if="sinfo" v-bind:class='{"sInfo":menuInfo==1}' @click="linkToPage(3)"> 
         <img class="menu" src="/static/img/menu.png" @click="animate" > 
     </div>
   </div>
@@ -127,13 +127,15 @@ export default {
     infoItem
   },
   methods: {
-    toCity() {
-      var url = "../pickCity/main";
-      wx.navigateTo({ url });
-      this.sinfo = false;
-    },
-    toAbout() {
-      var url = "../about/main";
+    linkToPage(params) {
+      var url;
+     if(params==1){
+         url = "../pickCity/main";
+     }else if(params==2){
+         url = "../about/main";
+     }else if(params==3){
+        url = "../setting/main";
+     }
       wx.navigateTo({ url });
       this.sinfo = false;
     },
@@ -196,6 +198,7 @@ export default {
           key: "5aeaeee5b8ad4a658b963c722ddfc645"
         },
         success: res => {
+          // wx.removeStorageSync('cityName')
           wx.hideLoading();
           if (res.data.HeWeather6[0]["status"] == "ok") {
             wx.showToast({
@@ -238,8 +241,7 @@ export default {
     }
   },
   created() {
-    // 调用应用实例的方法获取全局数据
-    this.getLocation();
+    // this.getLocation();
     // this.getWeather();
   },
   mounted() {
@@ -249,6 +251,8 @@ export default {
   },
 
   onLoad: function(options) {
+    // 调用应用实例的方法获取全局数据
+    this.getLocation();
     wx.setNavigationBarTitle({
       title: "轻天气"
     });
