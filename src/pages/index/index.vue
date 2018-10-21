@@ -266,6 +266,7 @@ export default {
   onShow(){
     if(!this.cityChange){
         this.getWeather( wx.getStorageSync('cityName'))
+        wx.clearStorageSync()
     }
      
   },
