@@ -55,7 +55,7 @@
     <!-- menu -->
     <div class="menus">
         <img class="menu-loc " src="/static/img/location.png" @click="linkToPage(1)"   v-if="sinfo" v-bind:class='{"mInfo":menuInfo==1}'> 
-        <img class="menu-info" src="/static/img/info.png" v-if="sinfo" v-bind:class='{"menuInfo":menuInfo==1}' @click="linkToPage(1)"> 
+        <img class="menu-info" src="/static/img/info.png" v-if="sinfo" v-bind:class='{"menuInfo":menuInfo==1}' @click="linkToPage(2)"> 
         <img class="menu-setting" src="/static/img/setting.png" v-if="sinfo" v-bind:class='{"sInfo":menuInfo==1}' @click="linkToPage(3)"> 
         <img class="menu" src="/static/img/menu.png" @click="animate" > 
     </div>
@@ -128,6 +128,8 @@ export default {
   },
   methods: {
     linkToPage(params) {
+      // console.log(123,'123')
+      // return
       var url;
      if(params==1){
          url = "../pickCity/main";
@@ -251,6 +253,7 @@ export default {
   },
 
   onLoad: function(options) {
+    // console.log('onload')
     // 调用应用实例的方法获取全局数据
     this.getLocation();
     wx.setNavigationBarTitle({
@@ -268,6 +271,8 @@ export default {
     if(!this.cityChange && pickCitySend){
         this.getWeather( wx.getStorageSync('cityName'))
         wx.clearStorageSync()
+    }else{
+      // this.getLocation();
     }
      
   },
