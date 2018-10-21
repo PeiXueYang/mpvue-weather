@@ -85,6 +85,7 @@ export default {
     },
     //选择城市
     chooseCity(name) {
+      wx.setStorageSync('pickerCity',true)
       wx.setStorage({
         key: "cityName",
         data: name,

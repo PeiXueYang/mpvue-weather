@@ -264,7 +264,8 @@ export default {
   //当 接受到picker 过来的城市数据
   // init pick天气 数据
   onShow(){
-    if(!this.cityChange){
+    let pickCitySend = wx.getStorageSync('pickerCity')
+    if(!this.cityChange && pickCitySend){
         this.getWeather( wx.getStorageSync('cityName'))
         wx.clearStorageSync()
     }
