@@ -49,7 +49,7 @@
             </div>
              <div>
                 <slider  class="slider" active-color="#40a7e7" block-color="#40a7e7" block-size="12" 
-                     max="100" min="0" show-value="" step="1" value="44">
+                     max="100" min="0" show-value="" step="1" value="44" @bindchanging='slideChange($event)'>
                 </slider>
              </div>
              <div class="item">
@@ -78,6 +78,9 @@ export default {
   mounted() {},
   created() {},
   methods: {
+     slideChange(e){
+      console.log('slider', e.detail.value)
+    },
     checkedsInfo() {
       wx.getSystemInfo({
         success: res => {
@@ -110,6 +113,7 @@ export default {
       });
     }
   },
+ 
   onLoad: function(options) {
   }
 };
